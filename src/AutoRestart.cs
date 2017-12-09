@@ -96,7 +96,10 @@ namespace OpenSim.Modules.AutoRestart
 
                 if (agentCount == 0)
                 {
-                    if(m_sendManagerShutdownCommand == false)
+                    m_log.Warn("[AutoRestart] Restart/Shutdown Region.");
+
+
+                    if (m_sendManagerShutdownCommand == false)
                         Environment.Exit(0);
 
                     if (m_sendManagerShutdownCommand == true)
@@ -104,7 +107,7 @@ namespace OpenSim.Modules.AutoRestart
                 }
                 else
                 {
-                    m_restartCounter -= 20;
+                    m_restartCounter -= (m_restartTime / 4);
                     m_log.Info("[AutoRestart] REGION IS NOT EMPTRY! MOVE RESTART.");
                 }
             }
