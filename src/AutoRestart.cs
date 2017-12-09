@@ -10,6 +10,7 @@ using OpenSim.Region.Framework.Interfaces;
 using System.Timers;
 using Mono.Addins;
 using OpenSim.Framework;
+using System.Threading;
 
 [assembly: Addin("AutoRestart", "1.0")]
 [assembly: AddinDependency("OpenSim.Region.Framework", OpenSim.VersionInfo.VersionNumber)]
@@ -98,12 +99,13 @@ namespace OpenSim.Modules.AutoRestart
                 {
                     m_log.Warn("[AutoRestart] Restart/Shutdown Region.");
 
-
-                    if (m_sendManagerShutdownCommand == false)
-                        Environment.Exit(0);
-
                     if (m_sendManagerShutdownCommand == true)
+                    {
                         ManagerAPI.sendShutDownCommand(m_managerURL, m_managerPass, m_managerTrigger, m_scene[0].RegionInfo.RegionID.ToString());
+                        Thread.Sleep(500);
+                    }
+
+                    Environment.Exit(0);
                 }
                 else
                 {
