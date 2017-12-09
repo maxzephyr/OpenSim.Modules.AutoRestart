@@ -23,6 +23,13 @@ namespace OpenSim.Modules.AutoRestart
         private List<Scene> m_scene = new List<Scene>();
         private Timer m_timer;
         private int m_restartCounter = 0;
+        private IConfigSource m_config;
+
+        private bool m_sendManagerShutdownCommand = false;
+        private String m_managerURL = "";
+        private String m_managerPass = "";
+        private String m_managerTrigger = "";
+        private int m_restartTime = 30;
 
         #region IRegionModule interface
 
@@ -47,14 +54,23 @@ namespace OpenSim.Modules.AutoRestart
 
         public void Initialise(IConfigSource config)
         {
+            m_config = config;
 
+            if(m_config.Configs["AutoRestart"] != null)
+            {
+                m_managerURL = m_config.Configs["AutoRestart"].GetString("ManagerURL", String.Empty);
+                m_managerPass = m_config.Configs["AutoRestart"].GetString("ManagerPass", String.Empty);
+                m_managerTrigger = m_config.Configs["AutoRestart"].GetString("ManagerTrigger", String.Empty);
+                m_sendManagerShutdownCommand = m_config.Configs["AutoRestart"].GetBoolean("RegionShutDown", false);
+                m_restartTime = m_config.Configs["AutoRestart"].GetInt("Time", 30);
+            }
         }
 
         public void timerEvent(object sender, ElapsedEventArgs e)
         {
             m_restartCounter++;
 
-            if (m_restartCounter == 120)
+            if (m_restartCounter == m_restartTime)
             {
                 int agentCount = 0;
 
@@ -78,8 +94,13 @@ namespace OpenSim.Modules.AutoRestart
 
                 if (agentCount == 0)
                 {
-                    Environment.Exit(0);
-                }else
+                    if(m_sendManagerShutdownCommand == false)
+                        Environment.Exit(0);
+
+                    if (m_sendManagerShutdownCommand == true)
+                        ManagerAPI.sendShutDownCommand(m_managerURL, m_managerPass, m_managerTrigger, m_scene[0].RegionInfo.RegionID.ToString());
+                }
+                else
                 {
                     m_restartCounter -= 20;
                     m_log.Info("[AutoRestart] REGION IS NOT EMPTRY! MOVE RESTART.");
