@@ -64,6 +64,8 @@ namespace OpenSim.Modules.AutoRestart
                 m_sendManagerShutdownCommand = m_config.Configs["AutoRestart"].GetBoolean("RegionShutDown", false);
                 m_restartTime = m_config.Configs["AutoRestart"].GetInt("Time", 30);
             }
+
+            m_log.Warn("[AutoRestart] Enable AutoRestart with a time of " + m_restartTime.ToString() + "(Shutdown: "+ m_sendManagerShutdownCommand.ToString() + ")");
         }
 
         public void timerEvent(object sender, ElapsedEventArgs e)
