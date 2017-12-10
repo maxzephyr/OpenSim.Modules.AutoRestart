@@ -22,7 +22,7 @@ namespace OpenSim.Modules.AutoRestart
     {
         private static readonly ILog m_log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
         private List<Scene> m_scene = new List<Scene>();
-        private Timer m_timer;
+        private System.Timers.Timer m_timer;
         private int m_restartCounter = 0;
         private IConfigSource m_config;
 
@@ -43,7 +43,7 @@ namespace OpenSim.Modules.AutoRestart
         {
             m_scene.Add(scene);
 
-            m_timer = new Timer(60000);
+            m_timer = new System.Timers.Timer(60000);
             m_timer.Elapsed += new ElapsedEventHandler(timerEvent);
             m_timer.Start();
         }
@@ -102,7 +102,10 @@ namespace OpenSim.Modules.AutoRestart
                     if (m_sendManagerShutdownCommand == true)
                     {
                         ManagerAPI.sendShutDownCommand(m_managerURL, m_managerPass, m_managerTrigger, m_scene[0].RegionInfo.RegionID.ToString());
-                        Thread.Sleep(500);
+                    }
+                    else
+                    {
+                        Thread.Sleep(1500);
                     }
 
                     Environment.Exit(0);
