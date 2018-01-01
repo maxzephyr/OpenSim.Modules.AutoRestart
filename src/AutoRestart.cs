@@ -105,14 +105,12 @@ namespace OpenSim.Modules.AutoRestart
                     }
                     else
                     {
-                        Thread.Sleep(1500);
+                        ManagerAPI.sendRestartCommand(m_managerURL, m_managerPass, m_managerTrigger, m_scene[0].RegionInfo.RegionID.ToString());
                     }
-
-                    Environment.Exit(0);
                 }
                 else
                 {
-                    m_restartCounter -= (m_restartTime / 4);
+                    m_restartCounter = 0;
                     m_log.Info("[AutoRestart] REGION IS NOT EMPTRY! MOVE RESTART.");
                 }
             }
