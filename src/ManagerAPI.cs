@@ -25,7 +25,7 @@ namespace OpenSim.Modules.AutoRestart
                 createClient();
 
                 String _adress = "http://" + new Uri(_URL).Authority + "/opensim/restart";
-                String _data = "pass:" + _authPass.Trim() + "&trigger:" + _trigger.Trim() + "&uuid:" + _regionID.Trim() + "";
+                String _data = "pass=" + _authPass.Trim() + "&trigger=" + _trigger.Trim() + "&uuid=" + _regionID.Trim() + "";
                 m_client.UploadStringAsync(new Uri(_adress), _data);
             }catch
             {
@@ -40,7 +40,7 @@ namespace OpenSim.Modules.AutoRestart
                 createClient();
 
                 String _adress = "http://" + new Uri(_URL).Authority + "/opensim/stop";
-                String _data = "pass:" + _authPass.Trim() + "&trigger:" + _trigger.Trim() + "&uuid:" + _regionID.Trim() + "";
+                String _data = "pass=" + _authPass.Trim() + "&trigger=" + _trigger.Trim() + "&uuid=" + _regionID.Trim() + "";
                 m_client.UploadStringAsync(new Uri(_adress), _data);
             }
             catch
