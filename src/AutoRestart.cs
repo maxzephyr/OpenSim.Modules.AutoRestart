@@ -32,6 +32,8 @@ namespace OpenSim.Modules.AutoRestart
         private String m_managerTrigger = "";
         private int m_restartTime = 30;
 
+        private List<String> m_disable = new List<String>();
+
         #region IRegionModule interface
 
         public void RegionLoaded(Scene scene)
@@ -41,11 +43,16 @@ namespace OpenSim.Modules.AutoRestart
 
         public void AddRegion(Scene scene)
         {
+            if (m_disable.Contains(scene.RegionInfo.RegionName))
+                return;
+
             m_scene.Add(scene);
 
             m_timer = new System.Timers.Timer(60000);
             m_timer.Elapsed += new ElapsedEventHandler(timerEvent);
             m_timer.Start();
+
+            m_log.Warn("[AutoRestart] Enable AutoRestart with a time of " + m_restartTime.ToString() + "(Shutdown: " + m_sendManagerShutdownCommand.ToString() + ")");
         }
 
         public void RemoveRegion(Scene scene)
@@ -64,9 +71,9 @@ namespace OpenSim.Modules.AutoRestart
                 m_managerTrigger = m_config.Configs["AutoRestart"].GetString("ManagerTrigger", String.Empty);
                 m_sendManagerShutdownCommand = m_config.Configs["AutoRestart"].GetBoolean("RegionShutDown", false);
                 m_restartTime = m_config.Configs["AutoRestart"].GetInt("Time", 30);
-            }
 
-            m_log.Warn("[AutoRestart] Enable AutoRestart with a time of " + m_restartTime.ToString() + "(Shutdown: "+ m_sendManagerShutdownCommand.ToString() + ")");
+                m_disable = new List<string>(m_config.Configs["AutoRestart"].GetString("DisableRegions", String.Empty).ToLower().Trim().Split(','));
+            }
         }
 
         public void timerEvent(object sender, ElapsedEventArgs e)
