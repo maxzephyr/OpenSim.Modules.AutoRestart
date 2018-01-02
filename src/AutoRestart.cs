@@ -80,7 +80,7 @@ namespace OpenSim.Modules.AutoRestart
         {
             m_restartCounter++;
 
-            if (m_restartCounter == m_restartTime)
+            if (m_restartCounter >= m_restartTime)
             {
                 int agentCount = 0;
 
