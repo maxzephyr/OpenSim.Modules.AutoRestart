@@ -97,14 +97,18 @@ namespace OpenSim.Modules.AutoRestart
                                 agentCount = agentCount + s.GetRootAgentCount();
                             }
                         }
-
-                        s.Backup(true);
                     }
                 }
 
                 if (agentCount == 0)
                 {
+
                     m_log.Warn("[AutoRestart] Restart/Shutdown Region.");
+
+                    foreach (Scene s in m_scene)
+                    {
+                        s.Backup(true);
+                    }
 
                     if (m_sendManagerShutdownCommand == true)
                     {
