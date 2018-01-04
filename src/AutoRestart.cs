@@ -114,6 +114,9 @@ namespace OpenSim.Modules.AutoRestart
                     {
                         ManagerAPI.sendRestartCommand(m_managerURL, m_managerPass, m_managerTrigger, m_scene[0].RegionInfo.RegionID.ToString());
                     }
+
+                    Thread.Sleep(2000);
+                    Environment.Exit(0);
                 }
                 else
                 {
