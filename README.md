@@ -7,7 +7,7 @@ Therefore it is no problem to restart the region every hour. Still, no one will 
 !!! Attention: The server shuts down completely. You need another tool that restarts the region automatically. !!!
 
 Config:
-
+```
 [AutoRestart]
     Time = 30; //The server restarts every 30 minutes.
-    
+```
