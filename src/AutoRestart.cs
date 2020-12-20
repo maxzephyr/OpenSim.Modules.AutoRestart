@@ -26,10 +26,6 @@ namespace OpenSim.Modules.AutoRestart
         private int m_restartCounter = 0;
         private IConfigSource m_config;
 
-        private bool m_sendManagerShutdownCommand = false;
-        private String m_managerURL = "";
-        private String m_managerPass = "";
-        private String m_managerTrigger = "";
         private int m_restartTime = 30;
         private int m_forceRestartTimeDays = 3;
 
@@ -63,10 +59,6 @@ namespace OpenSim.Modules.AutoRestart
 
             if(m_config.Configs["AutoRestart"] != null)
             {
-                m_managerURL = m_config.Configs["AutoRestart"].GetString("ManagerURL", String.Empty);
-                m_managerPass = m_config.Configs["AutoRestart"].GetString("ManagerPass", String.Empty);
-                m_managerTrigger = m_config.Configs["AutoRestart"].GetString("ManagerTrigger", String.Empty);
-                m_sendManagerShutdownCommand = m_config.Configs["AutoRestart"].GetBoolean("RegionShutDown", false);
                 m_restartTime = m_config.Configs["AutoRestart"].GetInt("Time", 30);
                 m_forceRestartTimeDays = m_config.Configs["AutoRestart"].GetInt("ForceRestartDays", 3);
 
@@ -79,7 +71,7 @@ namespace OpenSim.Modules.AutoRestart
 
             forceRestartTime = DateTime.Now.AddDays(m_forceRestartTimeDays);
 
-            m_log.Warn("[AutoRestart] Enable AutoRestart with a time of " + m_restartTime.ToString() + "(Shutdown: " + m_sendManagerShutdownCommand.ToString() + ")");
+            m_log.Warn("[AutoRestart] Enable AutoRestart with a time of " + m_restartTime.ToString());
         }
 
         public void timerEvent(object sender, ElapsedEventArgs e)
@@ -116,15 +108,6 @@ namespace OpenSim.Modules.AutoRestart
                     foreach (Scene s in m_scene)
                     {
                         s.Backup(true);
-                    }
-
-                    if (m_sendManagerShutdownCommand == true)
-                    {
-                        ManagerAPI.sendShutDownCommand(m_managerURL, m_managerPass, m_managerTrigger, m_scene[0].RegionInfo.RegionID.ToString());
-                    }
-                    else
-                    {
-                        ManagerAPI.sendRestartCommand(m_managerURL, m_managerPass, m_managerTrigger, m_scene[0].RegionInfo.RegionID.ToString());
                     }
 
                     Thread.Sleep(2000);
